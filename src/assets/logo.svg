@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 160" fill="none">
+  <!-- ── Flame ── -->
+  <g transform="translate(220, 10)">
+    <!-- Outer flame -->
+    <path d="M0 72 C-6 58 -14 42 -8 24 C-4 12 2 6 0 0 C4 8 10 16 8 28 C14 18 16 8 12 0 C22 14 24 30 18 46 C22 36 26 24 22 14 C32 28 30 50 20 64 C14 70 8 72 0 72Z"
+          fill="#C9A84C"/>
+    <!-- Inner flame -->
+    <path d="M0 72 C-4 62 -8 50 -4 38 C-2 30 2 26 0 20 C4 28 6 38 4 48 C6 42 8 34 6 26 C12 36 10 52 4 64 C2 68 0 72 0 72Z"
+          fill="#E8D08A" opacity="0.85"/>
+  </g>
+
+  <!-- ── Open Book ── -->
+  <!-- Left cover -->
+  <path d="M80 108 C100 102 140 98 180 98 L180 140 C140 140 100 144 80 150 Z"
+        fill="#8B1A2F"/>
+  <!-- Left pages (inner) -->
+  <path d="M88 110 C108 104 144 100 180 100 L180 138 C144 138 108 142 88 148 Z"
+        fill="#f5e6e9" opacity="0.55"/>
+  <!-- Left page lines -->
+  <line x1="104" y1="114" x2="174" y2="111" stroke="#8B1A2F" stroke-width="1.2" opacity="0.35"/>
+  <line x1="104" y1="120" x2="174" y2="117" stroke="#8B1A2F" stroke-width="1.2" opacity="0.35"/>
+  <line x1="104" y1="126" x2="174" y2="123" stroke="#8B1A2F" stroke-width="1.2" opacity="0.35"/>
+  <line x1="104" y1="132" x2="174" y2="129" stroke="#8B1A2F" stroke-width="1.2" opacity="0.35"/>
+
+  <!-- Right cover -->
+  <path d="M360 108 C340 102 300 98 260 98 L260 140 C300 140 340 144 360 150 Z"
+        fill="#8B1A2F"/>
+  <!-- Right pages (inner) -->
+  <path d="M352 110 C332 104 296 100 260 100 L260 138 C296 138 332 142 352 148 Z"
+        fill="#f5e6e9" opacity="0.55"/>
+  <!-- Right page lines -->
+  <line x1="336" y1="114" x2="266" y2="111" stroke="#8B1A2F" stroke-width="1.2" opacity="0.35"/>
+  <line x1="336" y1="120" x2="266" y2="117" stroke="#8B1A2F" stroke-width="1.2" opacity="0.35"/>
+  <line x1="336" y1="126" x2="266" y2="123" stroke="#8B1A2F" stroke-width="1.2" opacity="0.35"/>
+  <line x1="336" y1="132" x2="266" y2="129" stroke="#8B1A2F" stroke-width="1.2" opacity="0.35"/>
+
+  <!-- Spine -->
+  <rect x="216" y="96" width="8" height="46" rx="2" fill="#5a1020"/>
+
+  <!-- ── School Name ── -->
+  <text x="220" y="122" text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="0" fill="#8B1A2F" font-weight="700" letter-spacing="2">
+  </text>
+
+  <!-- ── Text below the book ── -->
+  <text x="220" y="155" text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="18" fill="#8B1A2F" font-weight="700" letter-spacing="2.5">
+    DEBBYFIELD SCHOOLS
+  </text>
+  <text x="220" y="171" text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="10" fill="#C9A84C" font-weight="400" letter-spacing="1.5">
+    Achieving Life's Purpose
+  </text>
+</svg>
