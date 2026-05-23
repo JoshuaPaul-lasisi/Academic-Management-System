@@ -408,7 +408,16 @@ ALTER TABLE public.assessment_scores  ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.timetables         ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.invitations        ENABLE ROW LEVEL SECURITY;
 
--- Profiles: users can read their own; director/principal can read all
+-- Drop all policies first so this script is safe to re-run
+DO $$ DECLARE pol RECORD; BEGIN
+  FOR pol IN
+    SELECT policyname, tablename FROM pg_policies WHERE schemaname = 'public'
+  LOOP
+    EXECUTE format('DROP POLICY IF EXISTS %I ON public.%I', pol.policyname, pol.tablename);
+  END LOOP;
+END $$;
+
+-- ── Profiles ─────────────────────────────────────────────────
 CREATE POLICY "profiles_self_read" ON public.profiles
   FOR SELECT USING (auth.uid() = id OR public.get_user_role() IN ('director','principal'));
 
@@ -418,35 +427,35 @@ CREATE POLICY "profiles_self_update" ON public.profiles
 CREATE POLICY "profiles_director_all" ON public.profiles
   FOR ALL USING (public.get_user_role() = 'director');
 
--- Schools: all authenticated users can read; director can write
+-- ── Schools ───────────────────────────────────────────────────
 CREATE POLICY "schools_read" ON public.schools
   FOR SELECT USING (auth.role() = 'authenticated');
 
 CREATE POLICY "schools_write" ON public.schools
   FOR ALL USING (public.get_user_role() IN ('director','principal'));
 
--- Annexes: all authenticated users can read; director/principal can write
+-- ── Annexes ───────────────────────────────────────────────────
 CREATE POLICY "annexes_read" ON public.annexes
   FOR SELECT USING (auth.role() = 'authenticated');
 
 CREATE POLICY "annexes_write" ON public.annexes
   FOR ALL USING (public.get_user_role() IN ('director','principal'));
 
--- Academic sessions: all authenticated users read; director/principal write
+-- ── Academic sessions ─────────────────────────────────────────
 CREATE POLICY "sessions_read" ON public.academic_sessions
   FOR SELECT USING (auth.role() = 'authenticated');
 
 CREATE POLICY "sessions_write" ON public.academic_sessions
   FOR ALL USING (public.get_user_role() IN ('director','principal'));
 
--- Terms: same
+-- ── Terms ─────────────────────────────────────────────────────
 CREATE POLICY "terms_read" ON public.terms
   FOR SELECT USING (auth.role() = 'authenticated');
 
 CREATE POLICY "terms_write" ON public.terms
   FOR ALL USING (public.get_user_role() IN ('director','principal'));
 
--- Classes: all read; director/principal write
+-- ── Classes ───────────────────────────────────────────────────
 CREATE POLICY "classes_read" ON public.classes
   FOR SELECT USING (auth.role() = 'authenticated');
 
@@ -459,21 +468,21 @@ CREATE POLICY "class_annexes_read" ON public.class_annexes
 CREATE POLICY "class_annexes_write" ON public.class_annexes
   FOR ALL USING (public.get_user_role() IN ('director','principal'));
 
--- Subjects: all read; director/principal write
+-- ── Subjects ──────────────────────────────────────────────────
 CREATE POLICY "subjects_read" ON public.subjects
   FOR SELECT USING (auth.role() = 'authenticated');
 
 CREATE POLICY "subjects_write" ON public.subjects
   FOR ALL USING (public.get_user_role() IN ('director','principal'));
 
--- Teacher assignments: director/principal full; teachers read own
+-- ── Teacher assignments ───────────────────────────────────────
 CREATE POLICY "assignments_admin" ON public.teacher_assignments
   FOR ALL USING (public.get_user_role() IN ('director','principal'));
 
 CREATE POLICY "assignments_self_read" ON public.teacher_assignments
   FOR SELECT USING (teacher_id = auth.uid());
 
--- Students: director/principal/bursar can read all; teachers read assigned classes
+-- ── Students ──────────────────────────────────────────────────
 CREATE POLICY "students_admin" ON public.students
   FOR ALL USING (public.get_user_role() IN ('director','principal'));
 
@@ -488,14 +497,14 @@ CREATE POLICY "students_teacher_read" ON public.students
     )
   );
 
--- Parent guardians: follow student access
+-- ── Parent guardians ──────────────────────────────────────────
 CREATE POLICY "parent_admin" ON public.parent_guardians
   FOR ALL USING (public.get_user_role() IN ('director','principal'));
 
 CREATE POLICY "parent_bursar_read" ON public.parent_guardians
   FOR SELECT USING (public.get_user_role() = 'bursar');
 
--- Fee structures: director/principal/bursar full access
+-- ── Fee structures ────────────────────────────────────────────
 CREATE POLICY "fees_admin" ON public.fee_structures
   FOR ALL USING (public.get_user_role() IN ('director','principal','bursar'));
 
@@ -508,14 +517,14 @@ CREATE POLICY "levies_admin" ON public.fee_levies
 CREATE POLICY "levies_read" ON public.fee_levies
   FOR SELECT USING (auth.role() = 'authenticated');
 
--- Fee accounts & payments: director/principal/bursar full
+-- ── Fee accounts & payments ───────────────────────────────────
 CREATE POLICY "fee_accounts_admin" ON public.student_fee_accounts
   FOR ALL USING (public.get_user_role() IN ('director','principal','bursar'));
 
 CREATE POLICY "fee_payments_admin" ON public.fee_payments
   FOR ALL USING (public.get_user_role() IN ('director','principal','bursar'));
 
--- Staff: director/principal full; bursar read; staff can see own
+-- ── Staff ─────────────────────────────────────────────────────
 CREATE POLICY "staff_admin" ON public.staff
   FOR ALL USING (public.get_user_role() IN ('director','principal'));
 
@@ -525,11 +534,11 @@ CREATE POLICY "staff_bursar_read" ON public.staff
 CREATE POLICY "staff_attendance_admin" ON public.staff_attendance
   FOR ALL USING (public.get_user_role() IN ('director','principal'));
 
--- Payroll: director/principal/bursar
+-- ── Payroll ───────────────────────────────────────────────────
 CREATE POLICY "payroll_admin" ON public.payroll
   FOR ALL USING (public.get_user_role() IN ('director','principal','bursar'));
 
--- Student attendance: director/principal/class teachers of that class
+-- ── Student attendance ────────────────────────────────────────
 CREATE POLICY "attendance_admin" ON public.student_attendance
   FOR ALL USING (public.get_user_role() IN ('director','principal'));
 
@@ -541,7 +550,7 @@ CREATE POLICY "attendance_teacher" ON public.student_attendance
     )
   );
 
--- Academic content: director/principal full; teachers manage own; all can read
+-- ── Scheme of work ────────────────────────────────────────────
 CREATE POLICY "sow_admin" ON public.scheme_of_work
   FOR ALL USING (public.get_user_role() IN ('director','principal'));
 
@@ -556,6 +565,7 @@ CREATE POLICY "sow_teacher" ON public.scheme_of_work
 CREATE POLICY "sow_read" ON public.scheme_of_work
   FOR SELECT USING (auth.role() = 'authenticated');
 
+-- ── E-notes ───────────────────────────────────────────────────
 CREATE POLICY "enotes_admin" ON public.e_notes
   FOR ALL USING (public.get_user_role() IN ('director','principal'));
 
@@ -565,6 +575,7 @@ CREATE POLICY "enotes_teacher" ON public.e_notes
 CREATE POLICY "enotes_read" ON public.e_notes
   FOR SELECT USING (auth.role() = 'authenticated');
 
+-- ── Exam questions ────────────────────────────────────────────
 CREATE POLICY "questions_admin" ON public.exam_questions
   FOR ALL USING (public.get_user_role() IN ('director','principal'));
 
@@ -574,6 +585,7 @@ CREATE POLICY "questions_teacher" ON public.exam_questions
 CREATE POLICY "questions_read" ON public.exam_questions
   FOR SELECT USING (auth.role() = 'authenticated');
 
+-- ── Assessment scores ─────────────────────────────────────────
 CREATE POLICY "scores_admin" ON public.assessment_scores
   FOR ALL USING (public.get_user_role() IN ('director','principal'));
 
@@ -588,13 +600,14 @@ CREATE POLICY "scores_teacher" ON public.assessment_scores
 CREATE POLICY "scores_read" ON public.assessment_scores
   FOR SELECT USING (auth.role() = 'authenticated');
 
+-- ── Timetables ────────────────────────────────────────────────
 CREATE POLICY "timetables_admin" ON public.timetables
   FOR ALL USING (public.get_user_role() IN ('director','principal'));
 
 CREATE POLICY "timetables_read" ON public.timetables
   FOR SELECT USING (auth.role() = 'authenticated');
 
--- Invitations: director can manage; users can read own email
+-- ── Invitations ───────────────────────────────────────────────
 CREATE POLICY "invitations_director" ON public.invitations
   FOR ALL USING (public.get_user_role() = 'director');
 
