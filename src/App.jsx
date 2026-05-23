@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
+import { Analytics } from '@vercel/analytics/react'
 import Spinner from './components/ui/Spinner'
 import Login from './pages/auth/Login'
 import SetupFlow from './pages/setup/SetupFlow'
@@ -76,6 +77,7 @@ export default function App() {
     <Router>
       <AuthProvider>
         <AppRoutes />
+        <Analytics />
       </AuthProvider>
     </Router>
   )
