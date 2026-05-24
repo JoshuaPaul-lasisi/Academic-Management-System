@@ -58,7 +58,12 @@ export function AuthProvider({ children }) {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       setUser(session?.user ?? null)
       if (session?.user) {
-        await Promise.all([fetchProfile(session.user.id), loadAppData()])
+        try {
+          await Promise.all([fetchProfile(session.user.id), loadAppData()])
+        } catch (err) {
+          console.error('Session load error:', err)
+          setSchoolSetup(false)
+        }
       }
       setLoading(false)
     })

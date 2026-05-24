@@ -14,27 +14,30 @@ import Spinner from '../../components/ui/Spinner'
 // ── Director / Principal Dashboard ──────────────────────────
 function AdminDashboard() {
   const { currentSession, currentTerm, selectedAnnex } = useAppStore()
-  const [stats, setStats] = useState(null)
+  const [stats, setStats] = useState({ students: 0, staff: 0, totalPaid: 0 })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const load = async () => {
-      const [studentsRes, staffRes, paymentsRes] = await Promise.all([
-        supabase.from('students').select('id', { count: 'exact', head: true }).eq('is_active', true),
-        supabase.from('profiles').select('id', { count: 'exact', head: true }).neq('role', 'pending'),
-        currentTerm
-          ? supabase.from('fee_payments').select('amount').eq('term_id', currentTerm.id)
-          : Promise.resolve({ data: [] }),
-      ])
-
-      const totalPaid = paymentsRes.data?.reduce((s, p) => s + (p.amount || 0), 0) ?? 0
-
-      setStats({
-        students: studentsRes.count ?? 0,
-        staff:    staffRes.count ?? 0,
-        totalPaid,
-      })
-      setLoading(false)
+      try {
+        const [studentsRes, staffRes, paymentsRes] = await Promise.all([
+          supabase.from('students').select('*', { count: 'exact', head: true }).eq('is_active', true),
+          supabase.from('profiles').select('*', { count: 'exact', head: true }).neq('role', 'pending'),
+          currentTerm
+            ? supabase.from('fee_payments').select('amount').eq('term_id', currentTerm.id)
+            : Promise.resolve({ data: [], error: null }),
+        ])
+        const totalPaid = paymentsRes.data?.reduce((s, p) => s + Number(p.amount || 0), 0) ?? 0
+        setStats({
+          students: studentsRes.count ?? 0,
+          staff:    staffRes.count ?? 0,
+          totalPaid,
+        })
+      } catch (err) {
+        console.error('Dashboard load error:', err)
+      } finally {
+        setLoading(false)
+      }
     }
     load()
   }, [currentTerm])
@@ -116,22 +119,25 @@ function AdminDashboard() {
 // ── Bursar Dashboard ─────────────────────────────────────────
 function BursarDashboard() {
   const { currentTerm } = useAppStore()
-  const [stats, setStats] = useState(null)
+  const [stats, setStats] = useState({ totalOwed: 0, totalPaid: 0, outstanding: 0, recentPayments: [] })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const load = async () => {
-      if (!currentTerm) { setLoading(false); return }
-      const [accountsRes, paymentsRes] = await Promise.all([
-        supabase.from('student_fee_accounts').select('total_owed, total_paid').eq('term_id', currentTerm.id),
-        supabase.from('fee_payments').select('amount, payment_date').eq('term_id', currentTerm.id).order('payment_date', { ascending: false }).limit(5),
-      ])
-
-      const totalOwed = accountsRes.data?.reduce((s, a) => s + (a.total_owed || 0), 0) ?? 0
-      const totalPaid = accountsRes.data?.reduce((s, a) => s + (a.total_paid || 0), 0) ?? 0
-
-      setStats({ totalOwed, totalPaid, outstanding: totalOwed - totalPaid, recentPayments: paymentsRes.data ?? [] })
-      setLoading(false)
+      try {
+        if (!currentTerm) return
+        const [accountsRes, paymentsRes] = await Promise.all([
+          supabase.from('student_fee_accounts').select('total_owed, total_paid').eq('term_id', currentTerm.id),
+          supabase.from('fee_payments').select('amount, payment_date').eq('term_id', currentTerm.id).order('payment_date', { ascending: false }).limit(5),
+        ])
+        const totalOwed = accountsRes.data?.reduce((s, a) => s + Number(a.total_owed || 0), 0) ?? 0
+        const totalPaid = accountsRes.data?.reduce((s, a) => s + Number(a.total_paid || 0), 0) ?? 0
+        setStats({ totalOwed, totalPaid, outstanding: totalOwed - totalPaid, recentPayments: paymentsRes.data ?? [] })
+      } catch (err) {
+        console.error('Bursar dashboard error:', err)
+      } finally {
+        setLoading(false)
+      }
     }
     load()
   }, [currentTerm])
