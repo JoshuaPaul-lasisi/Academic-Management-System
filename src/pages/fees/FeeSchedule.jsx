@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Edit2, Plus, Trash2, Download, ChevronDown, ChevronUp } from 'lucide-react'
+import { Edit2, Plus, Trash2, Download, ChevronDown, ChevronUp, Users } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { useAppStore } from '../../lib/store'
 import { generateFeeSchedule } from '../../lib/pdf'
@@ -18,6 +18,8 @@ export default function FeeSchedule() {
   const [loading, setLoading] = useState(true)
   const [editClass, setEditClass] = useState(null) // { id, name }
   const [expandedClass, setExpandedClass] = useState(null)
+  const [billing, setBilling] = useState({})   // { [classId]: 'loading' | 'done' | number }
+
 
   const annexId = annexes.find(a => a.name === selectedAnnex)?.id
 
@@ -50,6 +52,69 @@ export default function FeeSchedule() {
     if (!structure) return 0
     const levies = structure.fee_levies?.reduce((s, l) => s + Number(l.amount || 0), 0) ?? 0
     return Number(structure.tuition_fee || 0) + levies
+  }
+
+  const billStudents = async (cls) => {
+    if (!currentTerm || !annexId) return
+    setBilling(prev => ({ ...prev, [cls.id]: 'loading' }))
+    try {
+      // 1. Fetch all active students in this class for this annex
+      const { data: students, error: stuErr } = await supabase
+        .from('students')
+        .select('id, student_type')
+        .eq('class_id', cls.id)
+        .eq('annex_id', annexId)
+        .eq('is_active', true)
+      if (stuErr) throw stuErr
+      if (!students?.length) {
+        setBilling(prev => ({ ...prev, [cls.id]: 0 }))
+        return
+      }
+
+      const classStructures = structures[cls.id]
+
+      // 2. Compute total_owed per student using their student_type
+      const billingData = students.map(s => {
+        const struct = classStructures?.[s.student_type] ?? classStructures?.new ?? classStructures?.returning
+        const leviesTotal = struct?.fee_levies?.reduce((sum, l) => sum + Number(l.amount || 0), 0) ?? 0
+        const total_owed = Number(struct?.tuition_fee || 0) + leviesTotal
+        return { student_id: s.id, total_owed }
+      })
+
+      // 3. Find which students already have an account this term
+      const studentIds = students.map(s => s.id)
+      const { data: existing } = await supabase
+        .from('student_fee_accounts')
+        .select('id, student_id')
+        .eq('term_id', currentTerm.id)
+        .in('student_id', studentIds)
+
+      const existingMap = new Map((existing ?? []).map(a => [a.student_id, a.id]))
+
+      // 4. Insert new accounts for unbilled students
+      const toInsert = billingData
+        .filter(d => !existingMap.has(d.student_id))
+        .map(d => ({ ...d, term_id: currentTerm.id, total_paid: 0 }))
+
+      if (toInsert.length > 0) {
+        const { error: insErr } = await supabase.from('student_fee_accounts').insert(toInsert)
+        if (insErr) throw insErr
+      }
+
+      // 5. Update total_owed for already-billed students (preserve total_paid)
+      for (const d of billingData.filter(d => existingMap.has(d.student_id))) {
+        await supabase
+          .from('student_fee_accounts')
+          .update({ total_owed: d.total_owed, updated_at: new Date().toISOString() })
+          .eq('id', existingMap.get(d.student_id))
+      }
+
+      setBilling(prev => ({ ...prev, [cls.id]: students.length }))
+      setTimeout(() => setBilling(prev => ({ ...prev, [cls.id]: undefined })), 4000)
+    } catch (err) {
+      console.error(err)
+      setBilling(prev => ({ ...prev, [cls.id]: undefined }))
+    }
   }
 
   const handleDownload = () => {
@@ -123,6 +188,24 @@ export default function FeeSchedule() {
 
                 {!configured && (
                   <Badge variant="default" className="hidden sm:inline-flex">Not configured</Badge>
+                )}
+
+                {configured && billing[cls.id] === 'loading' && (
+                  <Button size="sm" variant="outline" disabled>
+                    <Spinner size="sm" /> Billing…
+                  </Button>
+                )}
+                {configured && typeof billing[cls.id] === 'number' && (
+                  <Badge variant="green">{billing[cls.id]} billed</Badge>
+                )}
+                {configured && !billing[cls.id] && (
+                  <Button
+                    size="sm" variant="outline"
+                    onClick={e => { e.stopPropagation(); billStudents(cls) }}
+                    title="Apply fee structure to all active students in this class"
+                  >
+                    <Users size={13} /> Bill
+                  </Button>
                 )}
 
                 <Button
