@@ -231,6 +231,38 @@ export function generateOutstandingReport({ rows, filters, schoolName, annexName
   return doc
 }
 
+// ── ALUMNI LIST ──────────────────────────────────────────────
+export function generateAlumniList({ rows, schoolName, annexName }) {
+  const doc   = new jsPDF({ unit: 'mm', format: 'a4' })
+  const pageW = doc.internal.pageSize.getWidth()
+  const pageH = doc.internal.pageSize.getHeight()
+
+  addHeader(doc, schoolName, annexName, pageW)
+
+  doc.setFontSize(14)
+  doc.setFont('helvetica', 'bold')
+  doc.setTextColor(...BURGUNDY)
+  doc.text('ALUMNI LIST', pageW / 2, 36, { align: 'center' })
+  doc.setFontSize(8)
+  doc.setFont('helvetica', 'normal')
+  doc.setTextColor(80, 80, 80)
+  doc.text(`Generated: ${format(new Date(), 'dd MMMM yyyy')}  ·  Total: ${rows.length}`, pageW / 2, 43, { align: 'center' })
+
+  autoTable(doc, {
+    startY: 50,
+    margin: { left: 14, right: 14 },
+    head: [['#', 'Name', 'Adm. No.', 'Last Class', 'Exit Year', 'Next Destination']],
+    body: rows.map((r, i) => [i + 1, r.name, r.admission_number ?? '—', r.class_name ?? '—', r.exit_year ?? '—', r.next_destination ?? '—']),
+    headStyles:  { fillColor: BURGUNDY, textColor: 255, fontSize: 8 },
+    bodyStyles:  { fontSize: 8.5 },
+    alternateRowStyles: { fillColor: CREAM },
+    columnStyles: { 0: { cellWidth: 8 } },
+  })
+
+  addFooter(doc, pageW, pageH)
+  return doc
+}
+
 // ── FEE SCHEDULE PDF ─────────────────────────────────────────
 export function generateFeeSchedule({ rows, schoolName, annexName, termName }) {
   const doc   = new jsPDF({ unit: 'mm', format: 'a4' })

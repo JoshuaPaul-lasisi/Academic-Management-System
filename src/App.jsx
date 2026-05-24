@@ -7,6 +7,9 @@ import AppShell from './components/layout/AppShell'
 import Dashboard from './pages/dashboard/Dashboard'
 import Settings from './pages/settings/Settings'
 import FeesPage from './pages/fees/FeesPage'
+import StudentsPage from './pages/students/StudentsPage'
+import StudentForm from './pages/students/StudentForm'
+import StudentDetail from './pages/students/StudentDetail'
 import ComingSoon from './pages/ComingSoon'
 
 function ProtectedRoute({ children }) {
@@ -59,7 +62,12 @@ function AppRoutes() {
       >
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard"  element={<Dashboard />} />
-        <Route path="students/*" element={<ComingSoon title="Student Records" />} />
+        <Route path="students">
+          <Route index element={<StudentsPage />} />
+          <Route path="new" element={<StudentForm />} />
+          <Route path=":id" element={<StudentDetail />} />
+          <Route path=":id/edit" element={<StudentForm />} />
+        </Route>
         <Route path="fees/*"      element={<FeesPage />} />
         <Route path="academics/*" element={<ComingSoon title="Academic Module" />} />
         <Route path="staff/*"    element={<ComingSoon title="Staff & Payroll" />} />
