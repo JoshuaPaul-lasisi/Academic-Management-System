@@ -6,6 +6,7 @@ import SetupFlow from './pages/setup/SetupFlow'
 import AppShell from './components/layout/AppShell'
 import Dashboard from './pages/dashboard/Dashboard'
 import Settings from './pages/settings/Settings'
+import FeesPage from './pages/fees/FeesPage'
 import ComingSoon from './pages/ComingSoon'
 
 function ProtectedRoute({ children }) {
@@ -59,7 +60,7 @@ function AppRoutes() {
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard"  element={<Dashboard />} />
         <Route path="students/*" element={<ComingSoon title="Student Records" />} />
-        <Route path="fees/*"     element={<ComingSoon title="Fee Management" />} />
+        <Route path="fees/*"      element={<FeesPage />} />
         <Route path="academics/*" element={<ComingSoon title="Academic Module" />} />
         <Route path="staff/*"    element={<ComingSoon title="Staff & Payroll" />} />
         <Route path="attendance/*" element={<ComingSoon title="Attendance" />} />
