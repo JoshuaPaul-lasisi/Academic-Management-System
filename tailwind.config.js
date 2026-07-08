@@ -33,7 +33,7 @@ export default {
         cream: '#FDF8F0',
       },
       fontFamily: {
-        serif: ['Georgia', 'Cambria', '"Times New Roman"', 'serif'],
+        serif: ['"Playfair Display"', 'Georgia', 'Cambria', 'serif'],
         sans:  ['Inter', 'system-ui', 'sans-serif'],
       },
       boxShadow: {

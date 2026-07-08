@@ -11,6 +11,13 @@ import StudentsPage from './pages/students/StudentsPage'
 import StudentForm from './pages/students/StudentForm'
 import StudentDetail from './pages/students/StudentDetail'
 import ComingSoon from './pages/ComingSoon'
+import WebsiteLayout from './pages/website/WebsiteLayout'
+import Home from './pages/website/Home'
+import About from './pages/website/About'
+import Programmes from './pages/website/Programmes'
+import Admissions from './pages/website/Admissions'
+import Gallery from './pages/website/Gallery'
+import Contact from './pages/website/Contact'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -47,11 +54,24 @@ function AppRoutes() {
 
   return (
     <Routes>
+      {/* ── Public website ──────────────────────────────────── */}
+      <Route element={<WebsiteLayout />}>
+        <Route index element={<Home />} />
+        <Route path="about"      element={<About />} />
+        <Route path="programmes" element={<Programmes />} />
+        <Route path="admissions" element={<Admissions />} />
+        <Route path="gallery"    element={<Gallery />} />
+        <Route path="contact"    element={<Contact />} />
+      </Route>
+
+      {/* ── Auth ────────────────────────────────────────────── */}
       <Route
         path="/login"
         element={user ? <Navigate to="/dashboard" replace /> : <Login />}
       />
+      <Route path="/setup" element={<SetupFlow />} />
 
+      {/* ── Protected app ───────────────────────────────────── */}
       <Route
         path="/"
         element={
@@ -60,22 +80,21 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       >
-        <Route index element={<Navigate to="/dashboard" replace />} />
-        <Route path="dashboard"  element={<Dashboard />} />
+        <Route path="dashboard"   element={<Dashboard />} />
         <Route path="students">
           <Route index element={<StudentsPage />} />
           <Route path="new" element={<StudentForm />} />
           <Route path=":id" element={<StudentDetail />} />
           <Route path=":id/edit" element={<StudentForm />} />
         </Route>
-        <Route path="fees/*"      element={<FeesPage />} />
-        <Route path="academics/*" element={<ComingSoon title="Academic Module" />} />
-        <Route path="staff/*"    element={<ComingSoon title="Staff & Payroll" />} />
+        <Route path="fees/*"       element={<FeesPage />} />
+        <Route path="academics/*"  element={<ComingSoon title="Academic Module" />} />
+        <Route path="staff/*"      element={<ComingSoon title="Staff & Payroll" />} />
         <Route path="attendance/*" element={<ComingSoon title="Attendance" />} />
-        <Route path="settings"   element={<Settings />} />
+        <Route path="settings"     element={<Settings />} />
       </Route>
 
-      <Route path="*" element={<Navigate to={user ? '/dashboard' : '/login'} replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
 }

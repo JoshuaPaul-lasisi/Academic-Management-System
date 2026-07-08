@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Check, ChevronRight, ChevronLeft, Plus, Trash2, School } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../contexts/AuthContext'
-import { DEFAULT_CLASSES, ANNEXES, TERM_NAMES } from '../../lib/constants'
+import { DEFAULT_CLASSES, ANNEXES, TERM_NAMES, DEFAULT_SUBJECTS } from '../../lib/constants'
 import Button from '../../components/ui/Button'
 import Input from '../../components/ui/Input'
 import LogoSvg from '../../assets/logo.svg'
@@ -338,6 +338,23 @@ export default function SetupFlow() {
       )
       const { error: linkErr } = await supabase.from('class_annexes').insert(links)
       if (linkErr) throw linkErr
+
+      // 7 — Seed default subjects for every class × annex
+      const getSubjects = (cls) => {
+        if (cls.level === 'nursery') return DEFAULT_SUBJECTS.nursery
+        if (cls.level === 'primary') return DEFAULT_SUBJECTS.primary
+        if (cls.name.startsWith('JSS')) return DEFAULT_SUBJECTS.jss
+        return DEFAULT_SUBJECTS.ss
+      }
+      const subjectRows = classRows.flatMap(cls =>
+        annexRows.flatMap(ann =>
+          getSubjects(cls).map(name => ({ name, class_id: cls.id, annex_id: ann.id }))
+        )
+      )
+      if (subjectRows.length > 0) {
+        const { error: subjErr } = await supabase.from('subjects').insert(subjectRows)
+        if (subjErr) throw subjErr
+      }
 
       await refreshAppData()
       setStep(4)
