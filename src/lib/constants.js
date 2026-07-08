@@ -56,3 +56,33 @@ export const COLORS = {
   gold: '#C9A84C',
   cream: '#FDF8F0',
 }
+
+export const DEFAULT_SUBJECTS = {
+  nursery: [
+    'Literacy', 'Numeracy', 'Creative Arts', 'Music & Rhymes',
+    'Physical Education', 'Environmental Studies',
+  ],
+  primary: [
+    'English Language', 'Mathematics', 'Basic Science & Technology',
+    'Social Studies', 'Civic Education', 'Christian Religious Studies',
+    'Islamic Religious Studies', 'Computer Studies',
+    'Cultural & Creative Arts', 'Physical & Health Education',
+    'Yoruba Language', 'French Language',
+  ],
+  jss: [
+    'English Language', 'Mathematics', 'Basic Science', 'Basic Technology',
+    'Social Studies', 'Civic Education', 'Christian Religious Studies',
+    'Islamic Religious Studies', 'Business Studies', 'Agricultural Science',
+    'Home Economics', 'Computer Studies', 'Physical & Health Education',
+    'Cultural & Creative Arts', 'Literature in English',
+    'French Language', 'Yoruba Language',
+  ],
+  ss: [
+    'English Language', 'Mathematics', 'Biology', 'Chemistry', 'Physics',
+    'Agricultural Science', 'Economics', 'Government',
+    'Literature in English', 'Christian Religious Studies',
+    'Islamic Religious Studies', 'Geography', 'Commerce', 'Accounting',
+    'Computer Studies', 'Further Mathematics',
+    'French Language', 'Yoruba Language', 'Technical Drawing',
+  ],
+}
