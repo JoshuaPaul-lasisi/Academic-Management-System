@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { MessageCircle, Target, Eye, Gem } from 'lucide-react'
 
-const WA_LINK = 'https://wa.me/2348012345678?text=Hello%2C%20I%27d%20like%20to%20know%20more%20about%20Debbyfield%20Schools'
+const WA_LINK = 'https://wa.me/2348055771756?text=Hello%2C%20I%27d%20like%20to%20know%20more%20about%20Debbyfield%20Schools'
 
 const VALUES = [
   { icon: '🎓', title: 'Academic Excellence',  desc: 'We hold every student to the highest standard, celebrating effort as much as achievement.' },

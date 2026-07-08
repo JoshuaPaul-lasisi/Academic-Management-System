@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Camera, MessageCircle } from 'lucide-react'
 
-const WA_LINK = 'https://wa.me/2348012345678?text=Hello%2C%20I%27d%20like%20to%20visit%20the%20campus'
+const WA_LINK = 'https://wa.me/2348055771756?text=Hello%2C%20I%27d%20like%20to%20visit%20the%20campus'
 
 const CATEGORIES = ['All', 'Campus', 'Classrooms', 'Sports', 'Events', 'Graduation']
 

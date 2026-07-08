@@ -13,7 +13,7 @@ const NAV_LINKS = [
   { label: 'Contact',    href: '/contact' },
 ]
 
-const WA_LINK = 'https://wa.me/2348012345678?text=Hello%2C%20I%27m%20interested%20in%20Debbyfield%20Schools'
+const WA_LINK = 'https://wa.me/2348055771756?text=Hello%2C%20I%27m%20interested%20in%20Debbyfield%20Schools'
 
 export default function WebsiteLayout() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -176,8 +176,11 @@ export default function WebsiteLayout() {
                     <p className="flex gap-2"><MapPin size={13} className="mt-0.5 flex-shrink-0 text-gold-500" />
                       12 Debbyfield Close, Lagos State
                     </p>
-                    <a href="tel:+2348012345678" className="flex gap-2 hover:text-gold-400 transition-colors">
-                      <Phone size={13} className="mt-0.5 flex-shrink-0" /> 080 1234 5678
+                    <a href="tel:+2348055771756" className="flex gap-2 hover:text-gold-400 transition-colors">
+                      <Phone size={13} className="mt-0.5 flex-shrink-0" /> 0805 577 1756
+                    </a>
+                    <a href="tel:+2348128746679" className="flex gap-2 hover:text-gold-400 transition-colors">
+                      <Phone size={13} className="mt-0.5 flex-shrink-0" /> 0812 874 6679
                     </a>
                     <a href="mailto:lagos@debbyfield.sch.ng" className="flex gap-2 hover:text-gold-400 transition-colors">
                       <Mail size={13} className="mt-0.5 flex-shrink-0" /> lagos@debbyfield.sch.ng
@@ -190,8 +193,8 @@ export default function WebsiteLayout() {
                     <p className="flex gap-2"><MapPin size={13} className="mt-0.5 flex-shrink-0 text-gold-500" />
                       8 School Road, Mowe, Ogun State
                     </p>
-                    <a href="tel:+2348087654321" className="flex gap-2 hover:text-gold-400 transition-colors">
-                      <Phone size={13} className="mt-0.5 flex-shrink-0" /> 080 8765 4321
+                    <a href="tel:+2348028016522" className="flex gap-2 hover:text-gold-400 transition-colors">
+                      <Phone size={13} className="mt-0.5 flex-shrink-0" /> 0802 801 6522
                     </a>
                     <a href="mailto:mowe@debbyfield.sch.ng" className="flex gap-2 hover:text-gold-400 transition-colors">
                       <Mail size={13} className="mt-0.5 flex-shrink-0" /> mowe@debbyfield.sch.ng

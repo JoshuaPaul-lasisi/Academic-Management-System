@@ -1,7 +1,7 @@
 import { useNavigate, Link } from 'react-router-dom'
 import { MessageCircle, ChevronRight, BookOpen, Award, Users, Heart, Star } from 'lucide-react'
 
-const WA_LINK = 'https://wa.me/2348012345678?text=Hello%2C%20I%27m%20interested%20in%20enrolling%20my%20child%20at%20Debbyfield%20Schools'
+const WA_LINK = 'https://wa.me/2348055771756?text=Hello%2C%20I%27m%20interested%20in%20enrolling%20my%20child%20at%20Debbyfield%20Schools'
 
 const STATS = [
   { value: '2003', label: 'Established' },

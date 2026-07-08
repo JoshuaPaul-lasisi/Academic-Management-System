@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { MessageCircle, Phone, Mail, MapPin, Clock, Send } from 'lucide-react'
 
-const WA_LINK = 'https://wa.me/2348012345678?text=Hello%2C%20I%27d%20like%20to%20get%20in%20touch%20with%20Debbyfield%20Schools'
+const WA_LINK = 'https://wa.me/2348055771756?text=Hello%2C%20I%27d%20like%20to%20get%20in%20touch%20with%20Debbyfield%20Schools'
 
 const CAMPUSES = [
   {
     name:    'Lagos Campus',
     address: '12 Debbyfield Close, Off Oshodi–Apapa Expressway, Lagos State',
-    phone:   '+234 801 234 5678',
+    phones:  ['+234 805 577 1756', '+234 812 874 6679'],
     email:   'lagos@debbyfield.sch.ng',
     hours:   'Mon – Fri: 7:30am – 4:00pm',
     color:   'border-burgundy-200 bg-burgundy-50',
@@ -16,7 +16,7 @@ const CAMPUSES = [
   {
     name:    'Mowe Campus',
     address: '8 School Road, Mowe, Ifo Local Government, Ogun State',
-    phone:   '+234 808 765 4321',
+    phones:  ['+234 802 801 6522'],
     email:   'mowe@debbyfield.sch.ng',
     hours:   'Mon – Fri: 7:30am – 4:00pm',
     color:   'border-gold-200 bg-gold-50',
@@ -92,7 +92,9 @@ export default function Contact() {
                     <Phone size={17} className={`mt-0.5 flex-shrink-0 ${c.accent}`} />
                     <div>
                       <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-0.5">Phone</p>
-                      <a href={`tel:${c.phone.replace(/\s/g, '')}`} className={`text-sm ${c.accent} hover:underline`}>{c.phone}</a>
+                      {c.phones.map(p => (
+                        <a key={p} href={`tel:${p.replace(/\s/g, '')}`} className={`block text-sm ${c.accent} hover:underline`}>{p}</a>
+                      ))}
                     </div>
                   </div>
                   <div className="flex gap-3">

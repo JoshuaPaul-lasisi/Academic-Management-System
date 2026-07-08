@@ -1,6 +1,6 @@
 import { MessageCircle, ClipboardList, UserCheck, FileText, CheckCircle } from 'lucide-react'
 
-const WA_LINK = 'https://wa.me/2348012345678?text=Hello%2C%20I%27d%20like%20to%20start%20the%20admissions%20process%20for%20my%20child'
+const WA_LINK = 'https://wa.me/2348055771756?text=Hello%2C%20I%27d%20like%20to%20start%20the%20admissions%20process%20for%20my%20child'
 
 const STEPS = [
   {

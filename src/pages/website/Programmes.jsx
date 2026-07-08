@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { MessageCircle, CheckCircle } from 'lucide-react'
 
-const WA_LINK = 'https://wa.me/2348012345678?text=Hello%2C%20I%27d%20like%20to%20know%20more%20about%20your%20programmes'
+const WA_LINK = 'https://wa.me/2348055771756?text=Hello%2C%20I%27d%20like%20to%20know%20more%20about%20your%20programmes'
 
 const PROGRAMMES = [
   {
